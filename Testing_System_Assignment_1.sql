@@ -1,4 +1,4 @@
-DROP DATABASE administer_exams;
+DROP DATABASE IF EXISTS administer_exams;
 CREATE DATABASE IF NOT EXISTS administer_exams;
 USE administer_exams;
 
