@@ -70,3 +70,8 @@ CREATE TABLE Exam(
     CreatorID INT,
     CreateDate DATE
 );
+
+CREATE TABLE ExamQuestion(
+	ExamID INT,
+    QuestionID INT
+);
