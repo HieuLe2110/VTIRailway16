@@ -15,16 +15,10 @@ FROM	`Account`
 WHERE	LENGTH(FullName) = (SELECT MAX(LENGTH(FullName))FROM `Account`);
 
 -- Question 5: Lấy ra thông tin account có full name dài nhất và thuộc phòng ban có id= 3
-WITH DepaID_3 AS
-(SELECT * FROM `Account`WHERE DepartmentID = 3)
-SELECT *
-FROM DepaID_3
-WHERE LENGTH(Fullname) = (SELECT MAX(LENGTH(Fullname))FROM DepaID_3);
-
 SELECT *
 FROM `Account`
 GROUP BY DepartmentID = 3 
-HAVING LENGTH(FullName) = (SELECT MAX(LENGTH(FullName)));
+HAVING LENGTH(FullName) = (SELECT MAX(LENGTH(FullName))FROM `Account`);
 
 -- Question 6: Lấy ra tên group đã tham gia trước ngày 20/12/2019
 SELECT	*
@@ -86,16 +80,3 @@ UPDATE		`GroupAccount`
 SET			AccountID = 5
 WHERE		GroupID = 4;
 SELECT * FROM `Account`;
-
-
-
-
-
-
-
-/* SELECT *
-FROM `Account`
--- WHERE AccountID >=2 OR AccountID <=4;	 -- ||:OR ,&&:AND
--- WHERE AccountID BETWEEN 2 AND 5;
--- WHERE AccountID IN(2,3,5); 				 -- NOT IN;
--- WHERE Email LIKE "%gmail%";   			 -- dau `_` thay cho 1 ki tu8 */
