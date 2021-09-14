@@ -114,53 +114,12 @@ CALL p_show_input_group_or_username('vti');
 -- departmentID: sẽ được cho vào 1 phòng chờ
 -- Sau đó in ra kết quả tạo thành công
 
-DROP PROCEDURE IF EXISTS p_create_user;
-INSERT INTO department (DepartmentName)
-VALUES ('Waiting Room');
 
-DELIMITER $$
-CREATE PROCEDURE p_create_user(IN v_input_fullname NVARCHAR(50), v_input_email NVARCHAR(50))
-BEGIN 
-	INSERT INTO `account`(Email, Username, FullName, DepartmentID, PositionID, CreateDate)
-    VALUES (v_input_email, LEFT(v_input_email, LOCATE('@',v_input_email) - 1), v_input_fullname, 11, 1, NOW());
-END$$
-DELIMITER ;
-
-CALL p_create_user('Nguyen Phat','phat@gmail.com');
 
 -- Question 8: Viết 1 store cho phép người dùng nhập vào Essay hoặc Multiple-Choice
 -- để thống kê câu hỏi essay hoặc multiple-choice nào có content dài nhất
 
-DROP PROCEDURE IF EXISTS p_find_max_question_content;
 
-DELIMITER $$
-CREATE PROCEDURE p_find_max_question_content(IN v_type_question NVARCHAR(50))
-BEGIN 
-	SELECT 
-		question.Content AS LongestContent
-	FROM
-		question
-	JOIN
-		typequestion ON typequestion.TypeID = question.TypeID
-	WHERE typequestion.TypeName = v_type_question
-	HAVING LENGTH(question.Content)  = MAX(LENGTH(question.Content));
-    
-END$$
-DELIMITER ;
-
-CALL p_find_max_question_content('Essay');
--- Question 9: Viết 1 store cho phép người dùng xóa exam dựa vào ID
-DROP PROCEDURE IF EXISTS sp_DeleteExamWithID;
-DELIMITER $$
-CREATE PROCEDURE sp_DeleteExamWithID (IN in_ExamID TINYINT UNSIGNED)
-	BEGIN
-		DELETE FROM examquestion 
-        WHERE ExamID = in_ExamID;
-		DELETE FROM Exam 
-        WHERE ExamID = in_ExamID;
-	END$$
-DELIMITER ;
-CALL sp_DeleteExamWithID(7);
 
 -- Question 10: Tìm ra các exam được tạo từ 3 năm trước và xóa các exam đó đi (sử
 -- dụng store ở câu 9 để xóa)
