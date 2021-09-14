@@ -88,6 +88,25 @@ Call sp_GetCountQuesFromType();
 -- chứa chuỗi của người dùng nhập vào hoặc trả về user có username chứa
 -- chuỗi của người dùng nhập vào
 
+DROP PROCEDURE IF EXISTS p_show_input_group_or_username;
+DELIMITER $$
+CREATE PROCEDURE p_show_input_group_or_username(IN v_input NVARCHAR(50))
+BEGIN 
+	SELECT 
+		GroupName AS Result
+	FROM 
+		`group`
+	WHERE `group`.GroupName LIKE (CONCAT('%',v_input,'%'))
+	UNION ALL
+    SELECT 
+		Username
+     FROM 
+		`account`
+	WHERE Username LIKE (CONCAT('%',v_input,'%'));
+END $$
+DELIMITER ;
+CALL p_show_input_group_or_username('vti');
+
 -- Question 7: Viết 1 store cho phép người dùng nhập vào thông tin fullName, email và
 -- trong store sẽ tự động gán:
 -- username sẽ giống email nhưng bỏ phần @..mail đi
@@ -95,9 +114,41 @@ Call sp_GetCountQuesFromType();
 -- departmentID: sẽ được cho vào 1 phòng chờ
 -- Sau đó in ra kết quả tạo thành công
 
+DROP PROCEDURE IF EXISTS p_create_user;
+INSERT INTO department (DepartmentName)
+VALUES ('Waiting Room');
+
+DELIMITER $$
+CREATE PROCEDURE p_create_user(IN v_input_fullname NVARCHAR(50), v_input_email NVARCHAR(50))
+BEGIN 
+	INSERT INTO `account`(Email, Username, FullName, DepartmentID, PositionID, CreateDate)
+    VALUES (v_input_email, LEFT(v_input_email, LOCATE('@',v_input_email) - 1), v_input_fullname, 11, 1, NOW());
+END$$
+DELIMITER ;
+
+CALL p_create_user('Nguyen Phat','phat@gmail.com');
+
 -- Question 8: Viết 1 store cho phép người dùng nhập vào Essay hoặc Multiple-Choice
 -- để thống kê câu hỏi essay hoặc multiple-choice nào có content dài nhất
 
+DROP PROCEDURE IF EXISTS p_find_max_question_content;
+
+DELIMITER $$
+CREATE PROCEDURE p_find_max_question_content(IN v_type_question NVARCHAR(50))
+BEGIN 
+	SELECT 
+		question.Content AS LongestContent
+	FROM
+		question
+	JOIN
+		typequestion ON typequestion.TypeID = question.TypeID
+	WHERE typequestion.TypeName = v_type_question
+	HAVING LENGTH(question.Content)  = MAX(LENGTH(question.Content));
+    
+END$$
+DELIMITER ;
+
+CALL p_find_max_question_content('Essay');
 -- Question 9: Viết 1 store cho phép người dùng xóa exam dựa vào ID
 DROP PROCEDURE IF EXISTS sp_DeleteExamWithID;
 DELIMITER $$
